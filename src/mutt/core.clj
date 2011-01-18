@@ -10,11 +10,10 @@
    ([start end exc?] (prange start end 1 exc?))
    ([start end step exc?]
       (lazy-seq
-       (let [end (if exc? end (inc end))]
-         (loop [acc [] cur start]
-           (if (< cur end)
-             (recur (conj acc cur ) (+ cur step))
-             acc)))))))
+       (let [comparison (if (pos? step) >= <=)]
+         (when-not (comparison start (if exc? end (inc end)))
+           (let [inc-fn (if-not (= step 0) (partial + step) inc)]
+             (cons start (prange (inc-fn start) end step exc?)))))))))
 
 (extend-type Character
   Rangeable
