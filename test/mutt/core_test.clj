@@ -1,33 +1,24 @@
 (ns mutt.core-test
-  (:refer-clojure :exclude [range])
-  (:require [clojure.core :as c])
-  (:use mutt.core
-        clojure.test))
+  (:use midje.sweet)
+  (:require [mutt.core :as m]))
 
-(deftest compat-test
-  (is (= (c/range 5)
-         (range 5)))
-  (is (= (c/range 5 10)
-         (range 5 10)))
-  (is (= ()
-         (range 10 5)))
-  (is (= (c/range 20 5 -1)
-         (range 20 5 -1)))
-  (is (= (c/range 10 30 2)
-         (range 10 30 2))))
+(fact "Integer range is just like the clojure.core version"
+  (m/range 5) => (just (range 5))
+  (m/range 5 10) => (just (range 5 10))
+  (m/range 10 5) => ()
+  (m/range 20 5 -1) => (just (range 20 5 -1))
+  (m/range 10 30 2) => (just (range 10 30 2)))
 
-(deftest excl-test
-  (is (= [0 1 2]
-           (range 0 3 1 true)
-           (range 0 2 1 false)))
-  (is (= [2 1 0]
-           (range 2 -1 -1 true)
-           (range 2 0 -1 false))))
+(fact "Can be exclusive."
+  (m/range 0 3 1 true) => (just [0 1 2])
+  (m/range 2 -1 -1 true) => (just [2 1 0]))
 
-(deftest char-test
-  (is (= [\a \b \c]
-           (range \a \d)
-           (take 3 (range \a \z))
-           (range \a \c 1 false)))
-  (is (= [\A \C \E \G]
-           (range \A \G 2 false))))
+(fact "Can be inclusive."
+  (m/range 0 2 1 false) => (just [0 1 2])
+  (m/range 2 0 -1 false) => (just [2 1 0]))
+
+(fact "Can create a range of characters."
+  (m/range \a \d) => (just [\a \b \c])
+  (m/range \a \z) => (has-prefix [\a \b \c])
+  (m/range \a \c 1 false) => (just [\a \b \c])
+  (m/range \A \G 2 false) => (just [\A \C \E \G]))
