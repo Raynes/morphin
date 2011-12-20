@@ -1,6 +1,6 @@
-(ns mutt.core-test
+(ns morphin.core-test
   (:use midje.sweet)
-  (:require [mutt.core :as m]))
+  (:require [morphin.core :as m]))
 
 (fact "Integer range is just like the clojure.core version"
   (m/range 5) => (just (range 5))

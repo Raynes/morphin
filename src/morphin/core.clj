@@ -1,4 +1,4 @@
-(ns mutt.core)
+(ns morphin.core)
 
 (defn- sign [x]
   (cond
